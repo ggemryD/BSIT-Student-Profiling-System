@@ -1,0 +1,49 @@
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE students (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE form_fields (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    field_name VARCHAR(255) NOT NULL,
+    field_type VARCHAR(50) NOT NULL, -- e.g., text, number, dropdown
+    is_required BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE announcements (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    admin_id INT NOT NULL, -- Foreign key for the admin posting the announcement
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (admin_id) REFERENCES admin(id) ON DELETE CASCADE
+);
+
+CREATE TABLE student_details (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    student_id INT NOT NULL,
+    field_name VARCHAR(255) NOT NULL,
+    field_value TEXT NOT NULL,
+    FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE
+);
+
+
+-----------------------------------------------------------------------------
+
+INSERT INTO admin (username, password) VALUES ('admin', 'admin123');
+
+INSERT INTO announcements (admin_id, title, content) 
+VALUES (1, 'Upcoming Seminar', 'There will be a seminar on Web Development on Dec 15th at 10 AM.');

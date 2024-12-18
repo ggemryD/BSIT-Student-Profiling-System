@@ -1,0 +1,51 @@
+/* Google Fonts Import Link */
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600&display=swap');
+
+* {
+   box-sizing: border-box;
+   margin: 0;
+   padding: 0;
+ }
+ 
+
+body{
+  height: 100vh;
+  /* background: #c1f7f5; */
+  /* background:#23374b; */
+  background:linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7)), url(../image/homeBg.jpg) no-repeat;
+  background-size: cover;
+}
+
+/* main */
+.container {
+  /* margin-top: 200px; */
+  padding-top: 260px;
+  text-align: center;
+  color: white;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+}
+
+.btn {
+  background-color: #34efdf;
+  color: #333;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background-color: #28d4c5;
+}

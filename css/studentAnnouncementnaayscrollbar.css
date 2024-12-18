@@ -1,0 +1,55 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Styling the container for the announcement page */
+.announcement-container {
+    margin-top: 100px;
+    margin-left: 220px; /* Adjust this if your sidebar has a different width */
+    padding: 20px;
+    background-color: white;
+    min-height: 100vh;
+    width: 800px;
+}
+
+/* Header */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Announcement list styling */
+.announcement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.announcement-item {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.announcement-item h2 {
+    font-size: 20px;
+    color: #333;
+}
+
+.announcement-item p {
+    font-size: 14px;
+    color: #555;
+}
+
+.announcement-item strong {
+    font-weight: bold;
+}
+

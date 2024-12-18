@@ -1,0 +1,108 @@
+/* General styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Styling the container for the announcement page */
+.announcement-container {
+    margin-left: 360px; /* Leaves space for the sidebar */
+    padding: 20px;
+    background-color: white;
+    min-height: 100vh;
+}
+
+/* Header */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.form-group label {
+    font-size: 16px;
+}
+
+.form-group input, .form-group textarea {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Styling for the announcements table */
+table {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+table th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+table td a {
+    color: #007BFF;
+    text-decoration: none;
+}
+
+table td a:hover {
+    text-decoration: underline;
+}
+
+/* Ensure the sidebar doesn't overlap 
+@media (min-width: 768px) {
+    .announcement-container {
+        margin-left: 220px; 
+    }
+}
+
+ Make the announcement container responsive 
+@media (max-width: 768px) {
+    .announcement-container {
+        margin-left: 0;
+        padding: 10px;
+    }
+
+    table {
+        font-size: 14px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+*/

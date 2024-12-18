@@ -1,0 +1,24 @@
+/* Sidebar styling */
+aside {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    width: 200px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+aside ul {
+    list-style-type: none;
+}
+
+aside ul li {
+    margin-bottom: 20px;
+}
+
+aside ul li a {
+    color: white;
+    text-decoration: none;
+}

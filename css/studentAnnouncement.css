@@ -1,0 +1,68 @@
+/* Global reset for margins and paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensure consistent sizing */
+}
+
+/* hide scroll bar */
+html, body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensure no unintentional overflow */
+    height: 100%; /* Prevent vertical scrollbar if unnecessary */
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+/* Styling the container for the announcement page */
+.announcement-container {
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 20px;
+    background-color: white;
+    /* width: 80%; Make it responsive */
+    max-width: 800px; /*Restrict the maximum width*/
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    /* min-height: calc(100vh - 100px); Ensure container takes the full height minus navbar */
+}
+
+/* Header */
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Announcement list styling */
+.announcement-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.announcement-item {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.announcement-item h2 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.announcement-item p {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.announcement-item strong {
+    font-weight: bold;
+}

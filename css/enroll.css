@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f9f9f9;
+}
+
+/* hide the scroll bar */
+html, body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensure no unintentional overflow */
+    height: 100%; /* Prevent vertical scrollbar if unnecessary */
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 700px;
+    margin: 7rem auto;
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.container h1 {
+    text-align: center;
+    color: #23374b;
+    margin-bottom: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+    padding: 0.8rem;
+    background: #23374b;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #3c6186;
+}
+
+.message {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #e6f7e8;
+    color: #388e3c;
+    border: 1px solid #4caf50;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.error {
+    color: #e53935;
+    font-size: 0.875rem;
+}

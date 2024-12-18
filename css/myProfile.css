@@ -1,0 +1,107 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+ /* body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    line-height: 1.6; 
+}  */
+
+/* hide scroll bar */
+html, body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
+    margin: 0;
+    padding: 0;
+    width: 100%; /* Ensure no unintentional overflow */
+    height: 100%; /* Prevent vertical scrollbar if unnecessary */
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    /* color: #333; */
+}
+
+.profile-container {
+    max-width: 800px;
+    margin: 6rem auto;
+    padding: 2rem;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    line-height: 1.6;
+} 
+
+h1 {
+    color: #1c1e21;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-weight: bold;
+    text-transform: capitalize;
+}
+
+h2 {
+    color: #1c1e21;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+.section {
+    margin-bottom: 2rem;
+}
+
+.fields-list {
+    margin-top: 1rem;
+}
+
+.field-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.field-item:last-child {
+    border-bottom: none;
+}
+
+.field-item strong {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #1c1e21;
+    flex: 0 0 35%;
+    text-align: right;
+    margin-right: 1rem;
+}
+
+.field-item span {
+    font-size: 1rem;
+    color: #555;
+    flex: 1;
+    text-align: left;
+}
+
+/* Update Button Styling */
+.update-btn-container {
+    text-align: center;
+    margin-top: 1.5rem;
+}
+
+.update-btn {
+    text-decoration: none;
+    background-color: #007bff;
+    color: #fff;
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.update-btn:hover {
+    background-color: #0056b3;
+}
+
