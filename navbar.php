@@ -39,7 +39,7 @@ if (isset($_SESSION['student_id'])) {
         <li><a href="myProfile.php"><i class="fas fa-user"></i> Profile</a></li>
         <li><a href="studentAnnouncement.php"><i class="fas fa-bullhorn"></i> Announcements</a></li>
         <li><a href="enroll.php"><i class="fas fa-clipboard-list"></i> Enroll</a></li>
-        <!-- <li class="center"><a href="#"><i class="fas fa-book"></i> Enrollment</a></li> -->
+        <li class="center"><a href="#"><i class="fas fa-book"></i> Enrollment</a></li>
         <li class="logout"><a href="studentLogin.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
     </ul>
 </header>
