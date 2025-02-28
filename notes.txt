@@ -47,3 +47,10 @@ INSERT INTO admin (username, password) VALUES ('admin', 'admin123');
 
 INSERT INTO announcements (admin_id, title, content) 
 VALUES (1, 'Upcoming Seminar', 'There will be a seminar on Web Development on Dec 15th at 10 AM.');
+
+
+
+------------------------------------------------------------
+this the updateProfile page i can see the yearlevel value but in myProfile page i cant, 
+please fix it again the myProfile page, i just send you this code in the updateProfile 
+page so that you have an idea on whats the problem

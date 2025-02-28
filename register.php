@@ -59,10 +59,13 @@ if (isset($_POST['submit'])) {
     <link rel="shortcut icon" href="image/bsitLogo2.png" type="image/x-icon">
 </head>
 <body>
-    <div class="container">
-        <div class="form-box">
-            <h3>Student Registration</h3>
-            
+
+    <img src="image/bsitLogo2.png" alt="Logo">
+    
+    <div class="register-container">
+        <div class="register-form">
+            <h2>Student Registration</h2>
+
             <!-- Display messages -->
             <?php
             if (!empty($messages)) {
@@ -74,18 +77,17 @@ if (isset($_POST['submit'])) {
             ?>
 
             <form action="" method="post">
-                <input type="text" name="first_name" placeholder="First Name" required>
-                <input type="text" name="last_name" placeholder="Last Name" required>
-                <input type="email" name="email" placeholder="Email" required>
-                <input type="password" name="password" placeholder="Password" required>
-                <input type="password" name="cpassword" placeholder="Confirm Password" required>
+                <input type="text" name="first_name" placeholder="First Name" required class="input-box">
+                <input type="text" name="last_name" placeholder="Last Name" required class="input-box">
+                <input type="email" name="email" placeholder="Email" required class="input-box">
+                <input type="password" name="password" placeholder="Password" required class="input-box">
+                <input type="password" name="cpassword" placeholder="Confirm Password" required class="input-box">
                 <input type="submit" name="submit" value="Register" class="btn">
             </form>
 
-            <p class="redirect-text">
-                Already have an account? <a href="studentLogin.php">Login here</a>
-            </p>
+            <p class="redirect-text">Already have an account? <a href="index.php">Login here</a></p>
         </div>
     </div>
+
 </body>
 </html>

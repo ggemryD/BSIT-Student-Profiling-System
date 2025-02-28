@@ -49,18 +49,18 @@ while ($row = $detailsResult->fetch_assoc()) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Student</title>
-    <link rel="stylesheet" href="css/viewStudent.css"> <!-- Link your CSS file -->
+    <link rel="stylesheet" href="css/viewStudent.css"> <!-- Link to updated CSS -->
     <link rel="shortcut icon" href="image/bsitLogo2.png" type="image/x-icon">
 </head>
 <body>
-    <!-- Include Navbar -->
+    <!-- Include Sidebar -->
     <?php include 'adminSideBar.php'; ?>
 
     <div class="view-student-container">
         <h1>View Student</h1>
         
         <div class="student-info">
-            <h2>Basic Information</h2>
+            <!-- <h2>Basic Information</h2> -->
             <p><strong>First Name:</strong> <?php echo htmlspecialchars($student['first_name']); ?></p>
             <p><strong>Last Name:</strong> <?php echo htmlspecialchars($student['last_name']); ?></p>
             <p><strong>Email:</strong> <?php echo htmlspecialchars($student['email']); ?></p>
@@ -84,3 +84,4 @@ while ($row = $detailsResult->fetch_assoc()) {
     </div>
 </body>
 </html>
+

@@ -42,85 +42,124 @@ while ($row = $result_details->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Report</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+        /* Reset & Base Styles */
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f5f5f5;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 20px;
         }
 
         .report-container {
-            width: 90%;
+            width: 100%;
             max-width: 600px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+            overflow: hidden;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #69bbbb;
+            padding-bottom: 10px;
         }
 
         .header h1 {
-            margin: 0;
-            font-size: 24px;
-            color: #333;
+            font-size: 28px;
+            font-weight: 700;
+            color: #333333;
         }
 
         .header p {
-            margin: 5px 0 0;
             font-size: 14px;
-            color: #555;
+            color: #777777;
+            margin-top: 5px;
         }
 
         .info-group {
             margin-bottom: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
         }
 
         .info-group p {
-            margin: 0;
             font-size: 16px;
-            color: #333;
-            line-height: 1.5;
+            color: #555555;
+            margin: 0;
         }
 
         .info-group span {
-            font-weight: bold;
-            color: #555;
+            font-weight: 600;
+            color: #333333;
         }
 
         .button-container {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
             margin-top: 20px;
         }
 
         .button-container button {
-            background-color: #007bff;
-            color: #fff;
+            flex: 1;
+            max-width: 48%;
+            background-color: #69bbbb;
+            color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+            padding: 12px 15px;
+            border-radius: 8px;
             font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
             transition: background-color 0.3s ease;
+            text-align: center;
         }
 
         .button-container button:hover {
-            background-color: #0056b3;
+            background-color: #51a3a3;
+        }
+
+        .button-container .btn-secondary {
+            background-color: #dc3545;
+        }
+
+        .button-container .btn-secondary:hover {
+            background-color: #b52d3a;
+        }
+
+        @media (max-width: 768px) {
+            .button-container button {
+                max-width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .button-container button:last-child {
+                margin-bottom: 0;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- Include Sidebar -->
+    <?php include 'adminSideBar.php'; ?>
+
     <div class="report-container">
         <div class="header">
             <h1>Student Report</h1>
-            <p>Generated Report</p>
+            <p>Generated on <?php echo date('F d, Y'); ?></p>
         </div>
 
         <div class="info-group">
@@ -139,6 +178,7 @@ while ($row = $result_details->fetch_assoc()) {
 
         <div class="button-container">
             <button onclick="window.print()">Print</button>
+            <button class="btn-secondary" onclick="window.location.href='studentManagement.php'">Back</button>
         </div>
     </div>
 </body>

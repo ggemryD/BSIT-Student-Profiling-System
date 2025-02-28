@@ -1,119 +1,241 @@
-/* Reset some default styling */
+/* Modern Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Body styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    /* background-color: #f5f7fa; */
+    color: #1a1a1a;
+    line-height: 1.6;
+    background: linear-gradient(
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15)
+    ), url(../image/enrollBg2.jpg);
+    background-size: cover;
+    background-position: center;
 }
 
-/* Navbar styling */
-nav {
-    background-color: #333;
-    padding: 10px;
-    color: white;
-    text-align: center;
-}
-
-nav a {
-    color: white;
-    text-decoration: none;
-    padding: 10px 20px;
-    margin: 0 10px;
-}
-
-nav a:hover {
-    background-color: #575757;
-}
-
-/* Main profile container */
+/* Container Styling */
 .profile-container {
-    width: 80%;
-    margin: 20px auto;
-    padding: 20px;
+    width: 90%;
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Title styling */
 .profile-container h1 {
     text-align: center;
     font-size: 2rem;
-    margin-bottom: 20px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e2e8f0;
 }
 
-/* Form styling */
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-/* Form group for each input */
+/* Form Section Styling */
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 1.5rem;
 }
 
 .form-group label {
-    font-size: 1rem;
-    margin-bottom: 5px;
-    font-weight: bold;
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 0.5rem;
 }
 
-.form-group input {
+/* Profile Picture Section */
+.profile-picture-container {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: #f8fafc;
+    border-radius: 12px;
+}
+
+.profile-picture-container img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profile-picture-upload {
+    flex: 1;
+}
+
+input[type="file"] {
+    display: block;
+    padding: 0.75rem;
     width: 100%;
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background-color: #f9f9f9;
-}
-
-.form-group input:focus {
-    border-color: #4caf50;
-    outline: none;
-}
-
-/* Button styling */
-button {
-    padding: 12px;
-    background-color: #4caf50;
-    color: white;
-    font-size: 1rem;
-    border: none;
-    border-radius: 4px;
+    border: 2px dashed #cbd5e0;
+    border-radius: 8px;
+    background-color: #ffffff;
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #45a049;
+/* Bio Section */
+.bio-section {
+    margin-bottom: 2rem;
+    background-color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
 }
 
-/* Styling for additional fields */
-h2 {
-    font-size: 1.5rem;
-    margin-top: 20px;
-    margin-bottom: 10px;
+.bio-section textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    resize: vertical;
+    font-family: inherit;
+    background-color: #ffffff;
+    transition: border-color 0.2s ease;
 }
 
-.update-btn-container {
-    text-align: center;
-    margin-top: 20px;
+.bio-section textarea:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
 }
 
-.update-btn-container a {
-    padding: 10px 20px;
-    background-color: #007bff;
+/* Basic & Dynamic Info Sections */
+.basic-info,
+.dynamic-info {
+    background-color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+}
+
+.basic-info h2,
+.dynamic-info h2 {
+    font-size: 1.25rem;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="email"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #ffffff;
+    transition: all 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* Button Styling */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+button[type="submit"] {
+    flex: 1;
+    padding: 0.875rem 1.5rem;
+    background-color: #4299e1;
     color: white;
-    text-decoration: none;
-    border-radius: 4px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-.update-btn-container a:hover {
-    background-color: #0056b3;
+button[type="submit"]:hover {
+    background-color: #3182ce;
+}
+
+.back-button {
+    padding: 0.875rem 1.5rem;
+    background-color: #edf2f7;
+    color: #4a5568;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.2s ease;
+}
+
+.back-button:hover {
+    background-color: #e2e8f0;
+}
+
+/* Email Display */
+.email-display {
+    padding: 0.75rem;
+    background-color: #edf2f7;
+    border-radius: 8px;
+    color: #4a5568;
+    font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .profile-container {
+        width: 95%;
+        padding: 1.5rem;
+        margin: 1rem auto;
+    }
+
+    .profile-picture-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    .back-button {
+        text-align: center;
+    }
+}
+
+/* Loading State */
+button[type="submit"].loading {
+    position: relative;
+    color: transparent;
+}
+
+button[type="submit"].loading::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #ffffff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 0.8s linear infinite;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin {
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
 }

@@ -1,53 +1,106 @@
-body {
-    font-family: Arial, sans-serif;
+/* Global Reset */
+* {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f9;
+    box-sizing: border-box;
 }
 
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: #f0f2f5;
+    color: #1a1a1a;
+    line-height: 1.6;
+}
+
+/* Container */
 .view-student-container {
-    max-width: 400px;
+    max-width: 800px;
     margin: 40px auto;
-    padding: 20px;
-    margin-left: 600px;
-    background: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    padding: 2rem;
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+    border-radius: 16px;
+    transition: all 0.3s ease;
 }
 
+.view-student-container:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Heading Styles */
 h1, h2 {
     text-align: center;
     color: #333;
+    font-weight: 600;
 }
 
+/* Student Info */
 .student-info, .student-details {
-    margin-bottom: 20px;
+    margin-bottom: 1.5rem;
 }
 
 .student-info p, .student-details ul {
-    margin: 10px 0;
+    margin: 0.8rem 0;
+    font-size: 1rem;
+    color: #4a5568;
 }
 
+.student-info p strong, .student-details li strong {
+    color: #2d3748;
+}
+
+/* List Styling */
 .student-details ul {
     list-style-type: none;
-    padding: 0;
+    padding-left: 0;
 }
 
 .student-details li {
-    margin: 5px 0;
+    margin: 8px 0;
+    font-size: 0.95rem;
+    background-color: #f7fafc;
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+/* Button Styles */
 .btn-back {
     display: inline-block;
-    margin-top: 10px;
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: white;
+    margin-top: 1.5rem;
+    padding: 12px 20px;
+    background-color: #3b82f6;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
     text-decoration: none;
-    border-radius: 4px;
+    border-radius: 8px;
     text-align: center;
+    transition: all 0.2s ease;
 }
 
 .btn-back:hover {
-    background-color: #0056b3;
+    background-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+.btn-back:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .view-student-container {
+        margin: 20px;
+        padding: 1.5rem;
+    }
+
+    h1 {
+        font-size: 1.75rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
 }

@@ -12,62 +12,23 @@ if (!isset($_SESSION['student_id'])) {
 // Get logged-in student's ID
 $student_id = $_SESSION['student_id'];
 
-// Process the form submission when the student updates their details
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $new_first_name = $_POST['first_name'];
-    $new_last_name = $_POST['last_name'];
-
-    // Update basic info (first_name, last_name)
-    $update_query = "UPDATE students SET first_name = ?, last_name = ? WHERE id = ?";
-    $stmt = $conn->prepare($update_query);
-    if (!$stmt) {
-        die("Error preparing statement: " . $conn->error);
-    }
-    $stmt->bind_param('ssi', $new_first_name, $new_last_name, $student_id);
-    $stmt->execute();
-    $stmt->close();
-
-    // Update additional fields if submitted
-    if (!empty($_POST['dynamic_fields'])) {
-        foreach ($_POST['dynamic_fields'] as $field_name => $field_value) {
-            $update_details_query = "INSERT INTO student_details (student_id, field_name, field_value) 
-                                      VALUES (?, ?, ?) 
-                                      ON DUPLICATE KEY UPDATE field_value = ?";
-            $stmt = $conn->prepare($update_details_query);
-            if (!$stmt) {
-                die("Error preparing statement: " . $conn->error);
-            }
-            $stmt->bind_param('isss', $student_id, $field_name, $field_value, $field_value);
-            $stmt->execute();
-            $stmt->close();
-        }
-    }
-
-    // Redirect back to profile after update
-    header('Location: myProfile.php');
-    exit();
-}
-
 // Fetch student basic information
-$query = "SELECT first_name, last_name, email FROM students WHERE id = ?";
+$query = "SELECT first_name, last_name, email, bio, profile_picture FROM students WHERE id = ?";
 $stmt = $conn->prepare($query);
 if (!$stmt) {
     die("Error preparing statement: " . $conn->error);
 }
 $stmt->bind_param('i', $student_id);
 $stmt->execute();
-$stmt->bind_result($first_name, $last_name, $email);
+$stmt->bind_result($first_name, $last_name, $email, $bio, $profile_picture);
 $stmt->fetch();
 $stmt->close();
 
 // Fetch dynamic form fields and their values
 $query = "
-    SELECT f.field_name, f.field_type, 
-           COALESCE(d.field_value, 'Not Provided') AS field_value 
-    FROM form_fields f 
-    LEFT JOIN student_details d 
-    ON f.field_name = d.field_name AND d.student_id = ? 
-    ORDER BY f.id";
+    SELECT field_name, field_value 
+    FROM student_details 
+    WHERE student_id = ?";
 $stmt = $conn->prepare($query);
 if (!$stmt) {
     die("Error preparing statement: " . $conn->error);
@@ -77,6 +38,11 @@ $stmt->execute();
 $result = $stmt->get_result();
 $dynamic_fields = $result->fetch_all(MYSQLI_ASSOC);
 $stmt->close();
+
+// Set default profile picture if none exists
+if (empty($profile_picture)) {
+    $profile_picture = 'uploads/default.png';
+}
 ?>
 
 <!DOCTYPE html>
@@ -84,59 +50,62 @@ $stmt->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Profile</title>
-    <link rel="stylesheet" href="css/myProfile.css"> 
+    <title>Student Information</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/myProfile.css">
     <link rel="shortcut icon" href="image/bsitLogo2.png" type="image/x-icon">
 </head>
 <body>
-
-    <!-- Include Navbar -->
     <?php include 'navbar.php'; ?>
 
     <div class="profile-container">
-        <h1>My Profile</h1>
-        
-        <!-- Basic Information -->
-        <div class="section">
-            <h2>Basic Information</h2>
-            <div class="fields-list">
-                <div class="field-item">
-                    <strong>First Name:</strong>
-                    <span><?php echo htmlspecialchars($first_name); ?></span>
+        <div class="profile-header">
+            <div class="profile-header-content">
+                <div class="profile-picture-wrapper">
+                    <img src="<?php echo htmlspecialchars($profile_picture); ?>" alt="Profile Picture" class="profile-picture">
                 </div>
-                <div class="field-item">
-                    <strong>Last Name:</strong>
-                    <span><?php echo htmlspecialchars($last_name); ?></span>
+                <div class="profile-info">
+                    <h1 class="profile-name"><?php echo htmlspecialchars($first_name . ' ' . $last_name); ?></h1>
+                    <p class="profile-email">
+                        <i class="fas fa-envelope"></i> <?php echo htmlspecialchars($email); ?>
+                    </p>
                 </div>
-                <div class="field-item">
-                    <strong>Email:</strong>
-                    <span><?php echo htmlspecialchars($email); ?></span>
+                <div class="profile-actions">
+                    <a href="updateProfile.php" class="update-btn">
+                        <i class="fas fa-edit"></i> Edit Profile
+                    </a>
                 </div>
             </div>
         </div>
-        
-        <!-- Additional Information -->
-        <div class="section">
-            <h2>Additional Information</h2>
-            <?php if (!empty($dynamic_fields)): ?>
-                <div class="fields-list">
-                    <?php foreach ($dynamic_fields as $field): ?>
-                        <div class="field-item">
-                            <strong><?php echo htmlspecialchars($field['field_name']); ?>:</strong>
-                            <span><?php echo htmlspecialchars($field['field_value']); ?></span>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php else: ?>
-                <p>No additional information available.</p>
-            <?php endif; ?>
-        </div>
-        
-        <!-- Update Profile Button -->
-        <div class="update-btn-container">
-            <a href="updateProfile.php" class="update-btn">Update Profile</a>
+
+        <div class="profile-content">
+            <div class="profile-card">
+                <h2 class="card-title">
+                    <i class="fas fa-user"></i> About Me
+                </h2>
+                <p class="bio-text"><?php echo nl2br(htmlspecialchars($bio)); ?></p>
+            </div>
+
+            <div class="profile-card">
+                <h2 class="card-title">
+                    <i class="fas fa-info-circle"></i> Additional Information
+                </h2>
+                <?php if (!empty($dynamic_fields)): ?>
+                    <div class="info-list">
+                        <?php foreach ($dynamic_fields as $field): ?>
+                            <div class="info-item">
+                                <span class="info-label"><?php echo htmlspecialchars($field['field_name']); ?></span>
+                                <span class="info-value">
+                                    <?php echo !empty($field['field_value']) ? htmlspecialchars($field['field_value']) : 'Not Provided'; ?>
+                                </span>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <p class="bio-text">No additional information available.</p>
+                <?php endif; ?>
+            </div>
         </div>
     </div>
-
 </body>
 </html>

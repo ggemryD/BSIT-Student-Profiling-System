@@ -79,38 +79,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Student</title>
-    <link rel="stylesheet" href="css/editStudent.css"> <!-- Link your CSS file -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/editStudent.css">
     <link rel="shortcut icon" href="image/bsitLogo2.png" type="image/x-icon">
 </head>
 <body>
-    <!-- Include Navbar -->
     <?php include 'adminSideBar.php'; ?>
 
     <div class="edit-student-container">
         <h1>Edit Student</h1>
 
-        <!-- Edit Student Form -->
         <form method="POST" action="editStudent.php?id=<?php echo $student_id; ?>">
-            <label for="first_name">First Name:</label>
-            <input type="text" name="first_name" value="<?php echo htmlspecialchars($student['first_name']); ?>" required>
+            <div class="form-group">
+                <label for="first_name">First Name</label>
+                <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($student['first_name']); ?>" required>
+            </div>
 
-            <label for="last_name">Last Name:</label>
-            <input type="text" name="last_name" value="<?php echo htmlspecialchars($student['last_name']); ?>" required>
+            <div class="form-group">
+                <label for="last_name">Last Name</label>
+                <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($student['last_name']); ?>" required>
+            </div>
 
-            <label for="email">Email:</label>
-            <input type="email" name="email" value="<?php echo htmlspecialchars($student['email']); ?>" required>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($student['email']); ?>" required>
+            </div>
 
-            <!-- Additional Details -->
             <h3>Additional Details</h3>
-            <?php foreach ($details as $field => $value): ?>
-                <label for="<?php echo $field; ?>"><?php echo htmlspecialchars($field); ?>:</label>
-                <input type="text" name="details[<?php echo $field; ?>]" value="<?php echo htmlspecialchars($value); ?>">
-            <?php endforeach; ?>
+            <div class="additional-details">
+                <?php foreach ($details as $field => $value): ?>
+                <div class="form-group">
+                    <label for="<?php echo $field; ?>"><?php echo htmlspecialchars($field); ?></label>
+                    <input type="text" id="<?php echo $field; ?>" name="details[<?php echo $field; ?>]" value="<?php echo htmlspecialchars($value); ?>">
+                </div>
+                <?php endforeach; ?>
+            </div>
 
-            <button type="submit">Update Student</button>
+            <div class="form-actions">
+                <button type="submit">Update Student</button>
+                <a href="studentManagement.php" class="btn-back">Back to Student Management</a>
+            </div>
         </form>
-
-        <a href="studentManagement.php" class="btn-back">Back to Student Management</a>
     </div>
 </body>
 </html>

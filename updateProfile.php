@@ -12,77 +12,92 @@ if (!isset($_SESSION['student_id'])) {
 // Get logged-in student's ID
 $student_id = $_SESSION['student_id'];
 
-// Process the form submission when the student updates their details
+// Fetch student details
+$query = "SELECT first_name, last_name, email, profile_picture, bio FROM students WHERE id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('i', $student_id);
+$stmt->execute();
+$result = $stmt->get_result();
+$student = $result->fetch_assoc();
+
+$first_name = $student['first_name'];
+$last_name = $student['last_name'];
+$email = $student['email'];
+$profile_picture = $student['profile_picture'];
+$bio = $student['bio']; // Fetch the bio from the database
+$stmt->close();
+
+// Fetch dynamic fields
+$dynamic_fields = [];
+$query = "SELECT field_name, field_value FROM student_details WHERE student_id = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('i', $student_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $dynamic_fields[] = $row;
+}
+$stmt->close();
+
+// Process the form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Update basic information
     $new_first_name = $_POST['first_name'];
     $new_last_name = $_POST['last_name'];
+    $new_bio = $_POST['bio'];
 
-    // Update basic info (first_name, last_name)
-    $update_query = "UPDATE students SET first_name = ?, last_name = ? WHERE id = ?";
+    $update_query = "UPDATE students SET first_name = ?, last_name = ?, bio = ? WHERE id = ?";
     $stmt = $conn->prepare($update_query);
-    if (!$stmt) {
-        die("Error preparing statement: " . $conn->error);
-    }
-    $stmt->bind_param('ssi', $new_first_name, $new_last_name, $student_id);
+    $stmt->bind_param('sssi', $new_first_name, $new_last_name, $new_bio, $student_id);
     $stmt->execute();
     $stmt->close();
 
-    // Update dynamic fields (additional fields) if submitted
+    // Handle Profile Picture Upload
+    $upload_dir = 'uploads/';
+    if (!is_dir($upload_dir) && !mkdir($upload_dir, 0777, true)) {
+        die("Failed to create upload directory.");
+    }
+
+    if (!empty($_FILES['profile_picture']['name'])) {
+        $file_name = basename($_FILES['profile_picture']['name']);
+        $target_path = $upload_dir . $student_id . '_' . time() . '_' . $file_name;
+        $file_type = strtolower(pathinfo($target_path, PATHINFO_EXTENSION));
+        $file_size = $_FILES['profile_picture']['size'];
+        $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+
+        if (in_array($file_type, $allowed_types) && $file_size <= 2 * 1024 * 1024) {
+            if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target_path)) {
+                $profile_picture = $target_path;
+                $update_picture_query = "UPDATE students SET profile_picture = ? WHERE id = ?";
+                $stmt = $conn->prepare($update_picture_query);
+                $stmt->bind_param('si', $profile_picture, $student_id);
+                $stmt->execute();
+                $stmt->close();
+            } else {
+                echo "<p style='color: red;'>Failed to upload profile picture. Please try again.</p>";
+            }
+        } else {
+            echo "<p style='color: red;'>Invalid file. Only JPG, JPEG, PNG, and GIF under 2MB are allowed.</p>";
+        }
+    }
+
+    // Handle dynamic fields
     if (!empty($_POST['dynamic_fields'])) {
         foreach ($_POST['dynamic_fields'] as $field_name => $field_value) {
-            // Skip core fields that are directly stored in students table
-            if (in_array($field_name, ['first_name', 'last_name'])) {
-                continue; // These are already handled
-            }
-
-            // Use INSERT ON DUPLICATE KEY UPDATE to prevent duplication in student_details table
             $update_details_query = "INSERT INTO student_details (student_id, field_name, field_value) 
                                       VALUES (?, ?, ?) 
                                       ON DUPLICATE KEY UPDATE field_value = ?";
             $stmt = $conn->prepare($update_details_query);
-            if (!$stmt) {
-                die("Error preparing statement: " . $conn->error);
-            }
             $stmt->bind_param('isss', $student_id, $field_name, $field_value, $field_value);
             $stmt->execute();
             $stmt->close();
         }
     }
 
-    // Redirect back to profile after update
+    // Redirect back to profile
     header('Location: myProfile.php');
     exit();
 }
-
-// Fetch student basic information
-$query = "SELECT first_name, last_name, email FROM students WHERE id = ?";
-$stmt = $conn->prepare($query);
-if (!$stmt) {
-    die("Error preparing statement: " . $conn->error);
-}
-$stmt->bind_param('i', $student_id);
-$stmt->execute();
-$stmt->bind_result($first_name, $last_name, $email);
-$stmt->fetch();
-$stmt->close();
-
-// Fetch dynamic form fields and their values
-$query = "
-    SELECT f.field_name, f.field_type, 
-           COALESCE(d.field_value, 'Not Provided') AS field_value 
-    FROM form_fields f 
-    LEFT JOIN student_details d 
-    ON f.field_name = d.field_name AND d.student_id = ? 
-    ORDER BY f.id";
-$stmt = $conn->prepare($query);
-if (!$stmt) {
-    die("Error preparing statement: " . $conn->error);
-}
-$stmt->bind_param('i', $student_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$dynamic_fields = $result->fetch_all(MYSQLI_ASSOC);
-$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -91,19 +106,31 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Update Profile</title>
-    <link rel="stylesheet" href="css/myProfile.css"> <!-- Link your CSS file -->
+    <link rel="stylesheet" href="css/updateProfile.css">
     <link rel="shortcut icon" href="image/bsitLogo2.png" type="image/x-icon">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-
-    <!-- Include Navbar -->
     <?php include 'navbar.php'; ?>
 
     <div class="profile-container">
         <h1>Update Profile</h1>
-        
-        <!-- Display basic information -->
-        <form method="POST" action="updateProfile.php">
+        <form method="POST" enctype="multipart/form-data">
+            <!-- Profile Picture -->
+            <div class="form-group">
+                <label for="profile_picture">Profile Picture:</label>
+                <input type="file" name="profile_picture" id="profile_picture" accept="image/*">
+                <?php if ($profile_picture): ?>
+                    <img src="<?php echo htmlspecialchars($profile_picture); ?>" alt="Profile Picture" style="width: 100px; height: 100px;">
+                <?php endif; ?>
+            </div>
+
+            <div class="bio-section">
+                <h2>Bio</h2>
+                <textarea name="bio" placeholder="Write something about yourself..." rows="4"><?php echo htmlspecialchars($bio); ?></textarea>
+            </div>
+
+            <!-- Basic Information -->
             <div class="basic-info">
                 <h2>Basic Information</h2>
                 <label for="first_name">First Name:</label>
@@ -113,7 +140,7 @@ $stmt->close();
                 <input type="text" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>" required>
 
                 <label for="email">Email:</label>
-                <input type="email" name="email" value="<?php echo htmlspecialchars($email); ?>" disabled>
+                <p><?php echo htmlspecialchars($email); ?></p>
             </div>
 
             <!-- Dynamic Fields -->
@@ -126,12 +153,17 @@ $stmt->close();
                 <?php endforeach; ?>
             </div>
 
-            <!-- Update Button -->
-            <div class="update-btn-container">
+            <!-- Submit Button -->
+            <!-- <div class="form-group">
                 <button type="submit">Update Profile</button>
+                <a href="myProfile.php" class="back-button">Back</a>
+            </div> -->
+
+            <div class="form-actions">
+                <button type="submit">Update Profile</button>
+                <a href="myProfile.php" class="back-button">Back</a>
             </div>
         </form>
     </div>
-
 </body>
 </html>

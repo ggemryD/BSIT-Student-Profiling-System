@@ -14,7 +14,8 @@ $query = "
     SELECT s.id, s.first_name, s.last_name, 
            MAX(CASE WHEN d.field_name = 'Gender' THEN d.field_value END) AS gender,
            MAX(CASE WHEN d.field_name = 'Section' THEN d.field_value END) AS section,
-           MAX(CASE WHEN d.field_name = 'Year_Level' THEN d.field_value END) AS year_level
+           MAX(CASE WHEN d.field_name = 'Year_Level' THEN d.field_value END) AS year_level,
+           MAX(CASE WHEN d.field_name = 'Enrollment_Status' THEN d.field_value END) AS enrollment_status
     FROM students s
     LEFT JOIN student_details d ON s.id = d.student_id
     GROUP BY s.id, s.first_name, s.last_name
@@ -34,8 +35,8 @@ if (!$result) {
     <link rel="stylesheet" href="css/studentManagement.css"> <!-- Link your CSS file -->
     <link rel="shortcut icon" href="image/bsitLogo2.png" type="image/x-icon">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- <style>
         .message {
             padding: 10px;
             margin: 10px 0;
@@ -81,18 +82,6 @@ if (!$result) {
             z-index: 1000;
         }
 
-        /* .add-student-form h2 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-        } */
-
-        /* .add-student-form label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-        } */
-
-
         .add-student-form input{
             width: 97%;
             margin: 10px 0;
@@ -131,7 +120,7 @@ if (!$result) {
         .search-bar {
             margin: 20px 0;
             padding: 10px;
-            width: 100%;
+            width: 98%;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
@@ -139,7 +128,8 @@ if (!$result) {
         .student-table {
             margin-top: 20px;
         }
-    </style>
+    </style> -->
+
 </head>
 <body>
 
@@ -149,11 +139,24 @@ if (!$result) {
     <div class="management-container">
         <h1>Student Management</h1>
 
-        <!-- Add Student Button -->
+        <!-- Add Student Button 
         <a href="javascript:void(0);" class="btn btn-add" id="addStudentBtn">Add Student</a>
 
-        <!-- Search Bar -->
-        <input type="text" id="searchBar" class="search-bar" placeholder="Search by First Name or Last Name">
+         Generate Report Button 
+        <a href="generateAllStudentsReport.php" class="btn btn-report">Generate Report for All Students</a>
+
+         Search Bar 
+        <input type="text" id="searchBar" class="search-bar" placeholder="Search Student">-->
+
+        <div class="actions-bar">
+            <input type="text" id="searchBar" class="search-bar" placeholder="Search by name, gender, section, year level or status...">
+            <a href="javascript:void(0);" class="btn btn-add" id="addStudentBtn">
+                <i class="fas fa-plus"></i> Add Student
+            </a>
+            <a href="generateAllStudentsReport.php" class="btn btn-report">
+                <i class="fas fa-file-alt"></i> Generate Report
+            </a>
+        </div>
 
         <!-- Add Student Form Popup -->
         <div class="add-student-form" id="addStudentForm">
@@ -186,6 +189,7 @@ if (!$result) {
                         <th>Gender</th>
                         <th>Section</th>
                         <th>Year Level</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -197,6 +201,7 @@ if (!$result) {
                             <td><?php echo htmlspecialchars($row['gender'] ?? 'Not Set'); ?></td>
                             <td><?php echo htmlspecialchars($row['section'] ?? 'Not Set'); ?></td>
                             <td><?php echo htmlspecialchars($row['year_level'] ?? 'Not Set'); ?></td>
+                            <td><?php echo htmlspecialchars($row['enrollment_status'] ?? 'Not Set'); ?></td>
                             <td>
                                 <a href="viewStudent.php?id=<?php echo $row['id']; ?>" class="btn btn-view">
                                     <i class="fas fa-eye"></i>
@@ -230,9 +235,8 @@ if (!$result) {
             document.getElementById('addStudentForm').style.display = 'none';
         });
 
-        // AJAX Dynamic Search
         document.getElementById('searchBar').addEventListener('input', function () {
-            const searchQuery = this.value;
+            const searchQuery = this.value.trim(); // Get input value
             const xhr = new XMLHttpRequest();
             xhr.open('GET', 'fetchStudents.php?search=' + encodeURIComponent(searchQuery), true);
             xhr.onload = function () {
@@ -242,6 +246,8 @@ if (!$result) {
             };
             xhr.send();
         });
+        
+
     </script>
 
 </body>
