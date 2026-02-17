@@ -27,7 +27,6 @@ $profile_picture = $student['profile_picture'];
 $bio = $student['bio']; // Fetch the bio from the database
 $stmt->close();
 
-// Fetch dynamic fields
 $dynamic_fields = [];
 $query = "SELECT field_name, field_value FROM student_details WHERE student_id = ?";
 $stmt = $conn->prepare($query);
@@ -39,12 +38,12 @@ while ($row = $result->fetch_assoc()) {
 }
 $stmt->close();
 
-// Process the form submission
+$upload_error = null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Update basic information
-    $new_first_name = $_POST['first_name'];
-    $new_last_name = $_POST['last_name'];
-    $new_bio = $_POST['bio'];
+    $new_first_name = isset($_POST['first_name']) ? $_POST['first_name'] : '';
+    $new_last_name = isset($_POST['last_name']) ? $_POST['last_name'] : '';
+    $new_bio = isset($_POST['bio']) ? $_POST['bio'] : '';
 
     $update_query = "UPDATE students SET first_name = ?, last_name = ?, bio = ? WHERE id = ?";
     $stmt = $conn->prepare($update_query);
@@ -52,20 +51,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->execute();
     $stmt->close();
 
-    // Handle Profile Picture Upload
     $upload_dir = 'uploads/';
     if (!is_dir($upload_dir) && !mkdir($upload_dir, 0777, true)) {
-        die("Failed to create upload directory.");
+        $upload_error = 'Failed to create upload directory.';
     }
 
-    if (!empty($_FILES['profile_picture']['name'])) {
+    if (!$upload_error && !empty($_FILES['profile_picture']['name'])) {
         $file_name = basename($_FILES['profile_picture']['name']);
         $target_path = $upload_dir . $student_id . '_' . time() . '_' . $file_name;
         $file_type = strtolower(pathinfo($target_path, PATHINFO_EXTENSION));
         $file_size = $_FILES['profile_picture']['size'];
         $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
 
-        if (in_array($file_type, $allowed_types) && $file_size <= 2 * 1024 * 1024) {
+        if (in_array($file_type, $allowed_types, true) && $file_size > 0 && $file_size <= 2 * 1024 * 1024) {
             if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target_path)) {
                 $profile_picture = $target_path;
                 $update_picture_query = "UPDATE students SET profile_picture = ? WHERE id = ?";
@@ -74,14 +72,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
                 $stmt->close();
             } else {
-                echo "<p style='color: red;'>Failed to upload profile picture. Please try again.</p>";
+                $upload_error = 'Failed to upload profile picture. Please try again.';
             }
         } else {
-            echo "<p style='color: red;'>Invalid file. Only JPG, JPEG, PNG, and GIF under 2MB are allowed.</p>";
+            $upload_error = 'Invalid file. Only JPG, JPEG, PNG, and GIF under 2MB are allowed.';
         }
     }
 
-    // Handle dynamic fields
     if (!empty($_POST['dynamic_fields'])) {
         foreach ($_POST['dynamic_fields'] as $field_name => $field_value) {
             $update_details_query = "INSERT INTO student_details (student_id, field_name, field_value) 
@@ -94,7 +91,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
-    // Redirect back to profile
     header('Location: myProfile.php');
     exit();
 }
@@ -113,57 +109,170 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <?php include 'navbar.php'; ?>
 
-    <div class="profile-container">
-        <h1>Update Profile</h1>
-        <form method="POST" enctype="multipart/form-data">
-            <!-- Profile Picture -->
-            <div class="form-group">
-                <label for="profile_picture">Profile Picture:</label>
-                <input type="file" name="profile_picture" id="profile_picture" accept="image/*">
-                <?php if ($profile_picture): ?>
-                    <img src="<?php echo htmlspecialchars($profile_picture); ?>" alt="Profile Picture" style="width: 100px; height: 100px;">
+    <div class="edit-profile-page">
+        <main class="edit-profile-layout" aria-labelledby="edit-profile-title">
+            <section class="edit-profile-header">
+                <div class="edit-profile-heading">
+                    <h1 id="edit-profile-title">Edit profile</h1>
+                    <p class="edit-profile-subtitle">Update your photo, bio, and personal information.</p>
+                </div>
+                <a href="myProfile.php" class="edit-profile-link">
+                    <i class="fas fa-arrow-left" aria-hidden="true"></i>
+                    <span>Back to profile</span>
+                </a>
+            </section>
+
+            <form method="POST" enctype="multipart/form-data" class="edit-profile-form" aria-describedby="edit-profile-description">
+                <p id="edit-profile-description" class="visually-hidden">
+                    Use this form to update your profile picture, bio, and personal details.
+                </p>
+
+                <?php if ($upload_error): ?>
+                    <div class="edit-profile-alert" role="alert">
+                        <?php echo htmlspecialchars($upload_error); ?>
+                    </div>
                 <?php endif; ?>
-            </div>
 
-            <div class="bio-section">
-                <h2>Bio</h2>
-                <textarea name="bio" placeholder="Write something about yourself..." rows="4"><?php echo htmlspecialchars($bio); ?></textarea>
-            </div>
+                <section class="edit-profile-section edit-profile-section-primary" aria-label="Profile picture and bio">
+                    <div class="edit-profile-avatar-block">
+                        <div class="edit-profile-avatar-wrapper">
+                            <div class="edit-profile-avatar">
+                                <img src="<?php echo htmlspecialchars($profile_picture ? $profile_picture : 'uploads/default.png'); ?>"
+                                     alt="Current profile picture"
+                                     class="edit-profile-avatar-image">
+                            </div>
+                            <label for="profile_picture" class="edit-profile-avatar-button">
+                                <i class="fas fa-camera" aria-hidden="true"></i>
+                                <span>Change photo</span>
+                            </label>
+                            <input
+                                type="file"
+                                name="profile_picture"
+                                id="profile_picture"
+                                accept="image/*"
+                                class="edit-profile-avatar-input"
+                                aria-label="Choose a new profile picture">
+                            <p class="edit-profile-avatar-hint">JPG, PNG, or GIF up to 2 MB.</p>
+                        </div>
+                        <div class="edit-profile-name-block">
+                            <p class="edit-profile-label">Name</p>
+                            <p class="edit-profile-name-value">
+                                <?php echo htmlspecialchars($first_name . ' ' . $last_name); ?>
+                            </p>
+                            <p class="edit-profile-email-value">
+                                <?php echo htmlspecialchars($email); ?>
+                            </p>
+                        </div>
+                    </div>
 
-            <!-- Basic Information -->
-            <div class="basic-info">
-                <h2>Basic Information</h2>
-                <label for="first_name">First Name:</label>
-                <input type="text" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>" required>
+                    <div class="edit-profile-field-group">
+                        <label for="bio" class="edit-profile-label">Bio</label>
+                        <textarea
+                            id="bio"
+                            name="bio"
+                            rows="4"
+                            placeholder="Write a short introduction..."
+                            class="edit-profile-textarea"
+                        ><?php echo htmlspecialchars($bio); ?></textarea>
+                    </div>
+                </section>
 
-                <label for="last_name">Last Name:</label>
-                <input type="text" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>" required>
+                <section class="edit-profile-section" aria-label="Basic information">
+                    <h2 class="edit-profile-section-title">Basic information</h2>
+                    <div class="edit-profile-two-column">
+                        <div class="edit-profile-field-group">
+                            <label for="first_name" class="edit-profile-label">First name</label>
+                            <input
+                                type="text"
+                                id="first_name"
+                                name="first_name"
+                                value="<?php echo htmlspecialchars($first_name); ?>"
+                                required
+                                class="edit-profile-input">
+                        </div>
+                        <div class="edit-profile-field-group">
+                            <label for="last_name" class="edit-profile-label">Last name</label>
+                            <input
+                                type="text"
+                                id="last_name"
+                                name="last_name"
+                                value="<?php echo htmlspecialchars($last_name); ?>"
+                                required
+                                class="edit-profile-input">
+                        </div>
+                    </div>
+                    <div class="edit-profile-field-group">
+                        <label class="edit-profile-label">Email</label>
+                        <div class="edit-profile-email-display">
+                            <?php echo htmlspecialchars($email); ?>
+                        </div>
+                    </div>
+                </section>
 
-                <label for="email">Email:</label>
-                <p><?php echo htmlspecialchars($email); ?></p>
-            </div>
+                <section class="edit-profile-section" aria-label="Additional information">
+                    <h2 class="edit-profile-section-title">Additional information</h2>
+                    <?php if (!empty($dynamic_fields)): ?>
+                        <div class="edit-profile-dynamic-grid">
+                            <?php foreach ($dynamic_fields as $field): ?>
+                                <div class="edit-profile-field-group">
+                                    <label
+                                        for="dynamic_<?php echo htmlspecialchars($field['field_name']); ?>"
+                                        class="edit-profile-label"
+                                    >
+                                        <?php echo htmlspecialchars($field['field_name']); ?>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="dynamic_<?php echo htmlspecialchars($field['field_name']); ?>"
+                                        name="dynamic_fields[<?php echo htmlspecialchars($field['field_name']); ?>]"
+                                        value="<?php echo htmlspecialchars($field['field_value']); ?>"
+                                        class="edit-profile-input">
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php else: ?>
+                        <p class="edit-profile-empty-text">
+                            No additional fields have been added to your profile yet.
+                        </p>
+                    <?php endif; ?>
+                </section>
 
-            <!-- Dynamic Fields -->
-            <div class="dynamic-info">
-                <h2>Additional Information</h2>
-                <?php foreach ($dynamic_fields as $field): ?>
-                    <label for="<?php echo $field['field_name']; ?>"><?php echo $field['field_name']; ?>:</label>
-                    <input type="text" name="dynamic_fields[<?php echo $field['field_name']; ?>]" 
-                           value="<?php echo htmlspecialchars($field['field_value']); ?>">
-                <?php endforeach; ?>
-            </div>
-
-            <!-- Submit Button -->
-            <!-- <div class="form-group">
-                <button type="submit">Update Profile</button>
-                <a href="myProfile.php" class="back-button">Back</a>
-            </div> -->
-
-            <div class="form-actions">
-                <button type="submit">Update Profile</button>
-                <a href="myProfile.php" class="back-button">Back</a>
-            </div>
-        </form>
+                <div class="edit-profile-actions">
+                    <button type="submit" class="edit-profile-submit">
+                        <span>Save changes</span>
+                    </button>
+                    <a href="myProfile.php" class="edit-profile-cancel">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </main>
     </div>
+
+    <script>
+    (function () {
+        var fileInput = document.getElementById('profile_picture');
+        var avatarPreview = document.querySelector('.edit-profile-avatar-image');
+
+        if (fileInput && avatarPreview) {
+            fileInput.addEventListener('change', function () {
+                if (!fileInput.files || !fileInput.files[0]) {
+                    return;
+                }
+                var file = fileInput.files[0];
+                if (!file.type || !file.type.match(/^image\\//i)) {
+                    return;
+                }
+                var reader = new FileReader();
+                reader.onload = function (event) {
+                    if (event.target && typeof event.target.result === 'string') {
+                        avatarPreview.src = event.target.result;
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    }());
+    </script>
 </body>
 </html>
